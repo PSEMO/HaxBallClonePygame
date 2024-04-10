@@ -53,9 +53,10 @@ def disBetweenPoints(P1, P2):
 def addInRange(val, add, minval, maxval):
     newval = val + add
     
-    if newval < minval: return minval
-    if newval > maxval: return maxval
-    return newval
+    #(new value, was in bounds)
+    if newval < minval: return (minval, False)
+    if newval > maxval: return (maxval, False)
+    return (newval, True)
 #endregion
 #region classes
 class Vector2:
@@ -108,9 +109,12 @@ class Character:
         self.VelocityUpdate(True, horizontal)
         self.VelocityUpdate(False, vertical)
 
-        self.pos.x = addInRange(self.pos.x,
-                self.vel.x * dt, 50, width - 50)
-        #self.pos.y = addInRange(self.pos.y, self.vel.y * dt, 50, height - 50)
+        _X = addInRange(self.pos.x, self.vel.x * dt, 50, width - 50)
+        if(_X[1] == False): self.vel.x = 0
+        self.pos.x = _X[0]
+        _Y = addInRange(self.pos.y, self.vel.y * dt, 50, width - 50)
+        if(_Y[1] == False): self.vel.y = 0
+        self.pos.y = _Y[0]
 
         pygame.draw.circle(screen, self.color, (self.pos.x, self.pos.y), self.size, 0)
         pygame.draw.circle(screen, (0, 0, 0), (self.pos.x, self.pos.y), self.size, 3)
