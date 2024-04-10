@@ -50,6 +50,12 @@ def draw_text(surface, text, size, color, x, y, relative):
 def disBetweenPoints(P1, P2):
     dis = (P1[1] - P2[1])**2 + (P1[0] - P2[0])**2
     return dis
+def addInRange(val, add, minval, maxval):
+    newval = val + add
+    
+    if newval < minval: return minval
+    if newval > maxval: return maxval
+    return newval
 #endregion
 #region classes
 class Vector2:
@@ -92,7 +98,7 @@ class Character:
         
         if isX: self.vel.x = velocity
         else: self.vel.y = velocity
-                
+
     def Update(self, dt, up: bool, left: bool, down: bool, right: bool):
         
         horizontal = right - left
@@ -102,8 +108,10 @@ class Character:
         self.VelocityUpdate(True, horizontal)
         self.VelocityUpdate(False, vertical)
 
-        self.pos.x += self.vel.x * dt
-        self.pos.y += self.vel.y * dt
+        self.pos.x = addInRange(self.pos.x,
+                self.vel.x * dt, 50, width - 50)
+        #self.pos.y = addInRange(self.pos.y, self.vel.y * dt, 50, height - 50)
+
         pygame.draw.circle(screen, self.color, (self.pos.x, self.pos.y), self.size, 0)
         pygame.draw.circle(screen, (0, 0, 0), (self.pos.x, self.pos.y), self.size, 3)
 
